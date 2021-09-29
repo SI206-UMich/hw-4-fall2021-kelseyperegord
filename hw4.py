@@ -89,6 +89,12 @@ class Stall:
         else: 
             return False
 
+    def process_order(self, food_name, food_qty) :
+        if self.has_item(food_name, food_qty):
+            self.inventory[food_name] -= food_qty
+            self.earnings += food_qty * self.cost
+
+
     def stock_up(self, food_name, food_qty):
         self.inventory[food_name] = self.inventory.get(food_name, 0) + food_qty
 
@@ -211,7 +217,7 @@ class TestAllMethods(unittest.TestCase):
         self.f2.reload_money(20)
         self.assertEqual(customer_wallet + 20, self.f2.wallet)
     
-    
+
 ### Write main function
 def main():
     #Create different objects 
@@ -226,17 +232,30 @@ def main():
     c3 = Customer("Kate", 15)
 	
     s1 = Cashier("Regan", directory= [])
-    s2 = Cashier("Jim", directory = [])
+    s2 = Cashier("Jim", directory = [t1, t2])
 
     #Try all cases in the validate_order function
     #Below you need to have *each customer instance* try the four cases
     #case 1: the cashier does not have the stall 
-    
+    c1.validate_order(s1, t1, "Burrito", 5)
+    c2.validate_order(s1, t1, "Taco", 5)
+    c3.validate_order(s1, t1, "Burrito", 5)
+
     #case 2: the casher has the stall, but not enough ordered food or the ordered food item
-    
+    c1.validate_order(s2, t1, "Burrito", 25)
+    c2.validate_order(s2, t2, "Steak", 5)
+    c3.validate_order(s2, t1, "Enchilada", 8)
+
     #case 3: the customer does not have enough money to pay for the order: 
-    
+    c1.validate_order(s2, t2, "Mashed potatoes", 10)
+    c2.validate_order(s2, t2, "Brussels sprouts", 20)
+    c3.validate_order(s2, t1, "Burrito", 19)
+
     #case 4: the customer successfully places an order
+    c1.validate_order(s2, t1, "Taco", 5)
+    c2.validate_order(s2, t2, "Fries", 1)
+    c3.validate_order(s2, t1, "Enchilada", 2)
+
 
 if __name__ == "__main__":
 	main()
